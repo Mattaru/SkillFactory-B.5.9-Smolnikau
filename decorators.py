@@ -2,6 +2,11 @@ import time
 
 # Функция декоратор
 def time_this(num_runs = 1):
+    """
+    Функция-декоратор, все функции помещенные в данный декоратор будут пропускаться через него и возвращать
+    среднее время на выполнение обернутой функции.
+    В качестве аргументо можно задать кол-во выполнений обернутой функции.
+    """
     def timer_wrap(func):
         def timer_wrapper(*args, **kwargs):
             av_time = 0
@@ -22,6 +27,10 @@ class Timer:
 
     def __call__(self, func):
         def time_wrapper(*args, **kwargs):
+            """
+            Класс Timer() и объекты этого класса можно использовать, как декораторы.
+            Можно задавать аргумент с кол-вом выполнений обернутой функции.
+            """
             avg_time = 0
             for _ in range(self.num_runs):
                 str_time = time.time()
@@ -33,15 +42,22 @@ class Timer:
         return time_wrapper
 
     def __enter__(self):
+        """
+        При использовании Timer() как контекстный менеджер, отмечает время запуска кода.
+        """
         self.start_time = time.time()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        При использовании Timer() как контекстный менеджер, отмечает время окончания работы кода и делает
+        рассчет времени, затраченного на выполнение кода внутри контекстного менеджера.
+        """
         self.end_time = time.time()
         run_time = self.end_time - self.start_time
         print("Общая продолжительность кода - %s. Проверка через контекстный менеджер." % run_time)
 
 # Проверяем функцию декоратор
-@time_this()
+@time_this(num_runs=10)
 def fd():
     for j in range(1000000):
         pass
@@ -49,7 +65,7 @@ def fd():
 fd()
 
 # Проверяем объект-декоратор класса Таймер
-@Timer()
+@Timer(num_runs=20)
 def f():
     for j in range(1000000):
         pass
